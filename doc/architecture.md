@@ -14,36 +14,88 @@ The architecture focuses on:
 
 ## 2. High-Level Architecture
 
+```mermaid
+graph TD
+    %% Styles
+    classDef external fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef infra fill:#eee,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef app fill:#cce6ff,stroke:#005c99,stroke-width:2px;
+    classDef worker fill:#ffebcc,stroke:#ff9900,stroke-width:2px;
 
-┌──────────────┐
-│ Cron Job │
-│ (node-cron) │
-└──────┬───────┘
-│
-▼
-┌──────────────┐
-│ Feed Fetcher │ ← XML APIs
-│ (Service) │
-└──────┬───────┘
-│
-▼
-┌──────────────┐
-│ Redis Queue │ ← BullMQ
-│ (job-import) │
-└──────┬───────┘
-│
-▼
-┌──────────────┐
-│ Worker Pool │ ← Concurrent workers
-│ (BullMQ) │
-└──────┬───────┘
-│
-▼
-┌──────────────┐
-│ MongoDB │
-│ Jobs + Logs │
-└──────────────┘
+    %% External Systems
+    subgraph External_Sources [External Job Sources]
+        direction LR
+        Jobicy["Jobicy API\n(XML/RSS)"]:::external
+    end
 
+    %% Infrastructure
+    subgraph Infrastructure [Data & Queues]
+        Redis[(Redis\nBullMQ Store)]:::infra
+        Mongo[(MongoDB)]:::infra
+        
+        subgraph Collections [DB Collections]
+            JobsColl[Jobs Collection]
+            LogsColl["Import Logs\n(History Tracking)"]
+        end
+    end
+
+    %% Backend Services
+    subgraph Backend [Node.js Backend System]
+        Cron["Cron Scheduler\n(Every 1 Hour)"]:::app
+        
+        subgraph Producer_Service [Producer Service]
+            Fetcher[API Fetcher]:::app
+            Parser[XML to JSON Parser]:::app
+            QueueProd[Queue Producer]:::app
+        end
+
+        subgraph Consumer_Service [Worker Service - Scalable]
+            Worker["Job Worker\n(Concurrency Controlled)"]:::worker
+            UpsertLogic["Upsert Logic\n(updateMany / bulkWrite)"]:::worker
+        end
+        
+        APIGateway[API Gateway / Admin Endpoints]:::app
+    end
+
+    %% Frontend
+    subgraph Frontend_Client [Client Side]
+        NextJS[Next.js Admin UI]:::app
+        User((Admin User)):::app
+    end
+
+    %% Relationships & Data Flow
+    
+    %% 1. Trigger & Fetch
+    Cron -- 1. Trigger --> Fetcher
+    Fetcher -- 2. HTTP GET --> Jobicy
+  
+    Jobicy  -- 3. Return XML --> Parser
+    
+    %% 2. Parse & Queue
+    Parser -- 4. Normalized JSON --> QueueProd
+    QueueProd -- 5. Add Job (Batched) --> Redis
+    
+    %% 3. Process
+    Redis -- 6. Poll/Process Job --> Worker
+    Worker --> UpsertLogic
+    
+    %% 4. Persistence
+    UpsertLogic -- 8. Write/Update --> JobsColl
+    UpsertLogic -- 9. Update Stats (New/Failed/Total) --> LogsColl
+    
+    %% 5. Monitoring
+    User -- View History --> NextJS
+    NextJS -- REST --> APIGateway
+    APIGateway -- Query Logs --> LogsColl
+    
+    %% Connections between infrastructure
+    JobsColl -.-> Mongo
+    LogsColl -.-> Mongo
+
+    %% Annotations for Scale
+    linkStyle 7 stroke:#ff9900,stroke-width:2px;
+    linkStyle 8 stroke:#ff9900,stroke-width:2px;
+```
 
 ---
 
@@ -122,8 +174,8 @@ db.jobs.createIndex(
   { source: 1, externalJobId: 1 },
   { unique: true }
 )
-
-Update logic:
+```
+## Update logic:
 
 New job → insert
 
@@ -133,7 +185,7 @@ Existing job with same hash → skip
 
 This ensures idempotent imports, even with repeated cron runs.
 
-// 4.2 Import Logs Collection (importlogs)
+## 4.2 Import Logs Collection (importlogs)
 
 Purpose:
 

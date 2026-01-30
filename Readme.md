@@ -135,9 +135,10 @@ New jobs created
 Jobs updated
 
 Failed jobs with error reasons
+```
 ---
 
-API Endpoints
+## API Endpoints
 Get Import History (Admin UI)
 
 GET /api/v1/history
@@ -151,7 +152,7 @@ Query Parameters
 | limit | 20      |
 
 
-Sample Response
+## Sample Response
 
 {
   "page": 1,
@@ -171,7 +172,7 @@ Sample Response
 }
 
 
-Frontend Table Mapping
+## Frontend Table Mapping
 
 | UI Column | API Field         |
 | --------- | ----------------- |
@@ -184,7 +185,7 @@ Frontend Table Mapping
 
 
 
-Setup Instructions
+## Setup Instructions
 Prerequisites
 
 Node.js v18+
@@ -196,7 +197,7 @@ Redis (local or Redis Cloud)
 cd Backend
 npm install
 
-// .env
+## .env
 PORT=5000
 DB_STRING=
 DB_NAME=
@@ -217,14 +218,14 @@ Start Backend Server
 
 npm start
 
-// frontend setup
+## frontend setup
 
-cd frontend
+## cd frontend
 
 npm install
 
 
-// create .env.local
+## create .env.local
 NEXT_PUBLIC_REACT_APP_BASE_URL=
 
 Start frontend next.js
@@ -232,14 +233,14 @@ Start frontend next.js
 npm run dev
 
 
-// Important Note: HigherEdJobs RSS Feed Limitation
+## Important Note: HigherEdJobs RSS Feed Limitation
 Status: Blocked by Provider (Expected Behavior)
 
 Although
 https://www.higheredjobs.com/rss/articleFeed.cfm
 is a valid RSS endpoint, HigherEdJobs actively blocks automated and server-side access using Imperva / Incapsula bot protection.
 
-// What Happens
+## What Happens
 
 Requests from:
 
@@ -253,14 +254,14 @@ Cloud servers
 
 are blocked.
 
-// Instead of XML, the response is an HTML security challenge page:
+## Instead of XML, the response is an HTML security challenge page:
 
 <iframe src="/_Incapsula_Resource?...">
   Request unsuccessful. Incapsula incident ID: ...
 </iframe>
 
 
-// Result:
+## Result:
 
 Response is not XML
 
@@ -289,7 +290,7 @@ Cron job never crashes
 Import history remains accurate
 
 
-//  Testing & Verification
+##  Testing & Verification
 
 Cron execution verified via logs
 
@@ -299,7 +300,7 @@ Duplicate job prevention verified via repeated cron runs
 
 Pagination tested using /api/v1/history
 
-// Scalability Notes
+## Scalability Notes
 
 Queue-based processing supports horizontal scaling
 
@@ -309,7 +310,7 @@ MongoDB indexes ensure fast deduplication
 
 Architecture can evolve into microservices if needed
 
-// Assumptions
+## Assumptions
 
 Import logs are immutable audit records
 
@@ -319,14 +320,14 @@ Job uniqueness is defined by (source + externalJobId)
 
 External APIs are read-only
 
-// Documentation
+## Documentation
 
 System design and architectural decisions are documented in:
 
 /docs/architecture.md
 
 
-// Author
+## Author
 
 Pintu Kumar
 Full Stack Developer (MERN)
