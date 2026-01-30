@@ -9,18 +9,24 @@ exports.startCron = () => {
   cronStarted = true;
   console.log("🚀 ~ startCron ~ cronStarted:", cronStarted);
 
-  cron.schedule("0 * * * *", async () => {
-    try {
-      console.log("Running job import cron");
-      for (const feed of feeds) {
-        fetchFeeds(feed);
-      }
+  cron.schedule(
+    "0 * * * *",
+    async () => {
+      try {
+        console.log("Running job import cron");
+        for (const feed of feeds) {
+          fetchFeeds(feed);
+        }
 
-      console.log("Job import cron finished");
-    } catch (err) {
-      console.error("Cron failed:", err);
-    }
-  });
+        console.log("Job import cron finished");
+      } catch (err) {
+        console.error("Cron failed:", err);
+      }
+    },
+    {
+      timezone: "Asia/Kolkata",
+    },
+  );
 };
 
 // const feeds = require("../../utils/dataSource/feed");
