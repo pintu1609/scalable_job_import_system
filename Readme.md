@@ -196,10 +196,11 @@ Redis (local or Redis Cloud)
 cd Backend
 npm install
 
+// .env
 PORT=5000
 DB_STRING=
 DB_NAME=
-REDIS_HOST=127.0.0.1
+REDIS_HOST=
 WORKER_CONCURRENCY=10
 
 
@@ -215,6 +216,20 @@ redis-cli ping
 Start Backend Server
 
 npm start
+
+// frontend setup
+
+cd frontend
+
+npm install
+
+
+// create .env.local
+NEXT_PUBLIC_REACT_APP_BASE_URL=
+
+Start frontend next.js
+
+npm run dev
 
 
 // Important Note: HigherEdJobs RSS Feed Limitation
