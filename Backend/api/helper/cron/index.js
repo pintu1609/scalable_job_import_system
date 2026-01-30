@@ -13,7 +13,7 @@ exports.startCron = () => {
     try {
       console.log("Running job import cron");
       for (const feed of feeds) {
-        await fetchFeeds(feed);
+        fetchFeeds(feed);
       }
 
       console.log("Job import cron finished");
