@@ -50,9 +50,9 @@ module.exports = [
       "https://jobicy.com/?feed=job_feed&job_categories=seller&job_types=full-time&search_region=france",
   },
 
-  {
-    source: "higheredjobs",
-    category: "education",
-    feedUrl: "https://www.higheredjobs.com/rss/articleFeed.cfm",
-  },
+  // {
+  //   source: "higheredjobs",
+  //   category: "education",
+  //   feedUrl: "https://www.higheredjobs.com/rss/articleFeed.cfm",
+  // },
 ];

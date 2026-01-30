@@ -217,6 +217,62 @@ Start Backend Server
 npm start
 
 
+// Important Note: HigherEdJobs RSS Feed Limitation
+Status: Blocked by Provider (Expected Behavior)
+
+Although
+https://www.higheredjobs.com/rss/articleFeed.cfm
+is a valid RSS endpoint, HigherEdJobs actively blocks automated and server-side access using Imperva / Incapsula bot protection.
+
+// What Happens
+
+Requests from:
+
+Node.js
+
+Axios
+
+Cron jobs
+
+Cloud servers
+
+are blocked.
+
+// Instead of XML, the response is an HTML security challenge page:
+
+<iframe src="/_Incapsula_Resource?...">
+  Request unsuccessful. Incapsula incident ID: ...
+</iframe>
+
+
+// Result:
+
+Response is not XML
+
+XML parsing fails safely
+
+No items are imported for this feed
+
+Why This Is Not a Bug
+
+This behavior is intentional
+
+The feed is designed for browser-based access only
+
+Many production APIs apply similar restrictions
+
+How the System Handles It
+
+Detects non-XML responses
+
+Logs the feed execution with 0 items
+
+Continues processing other feeds
+
+Cron job never crashes
+
+Import history remains accurate
+
 
 //  Testing & Verification
 
