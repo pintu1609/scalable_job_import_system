@@ -193,7 +193,7 @@ MongoDB (local or Atlas)
 
 Redis (local or Redis Cloud)
 
-cd server
+cd Backend
 npm install
 
 PORT=5000
