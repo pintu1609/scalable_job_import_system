@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+import Provider from "@/utlis/provider";
+import { CookiesProvider } from 'next-client-cookies/server'
+import Footer from "@/component/footer/Footer";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +32,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Provider>
+                <CookiesProvider>
+
+          <Toaster position="top-right" />
         {children}
+          <Footer/>
+
+        </CookiesProvider>
+        </Provider>
+
       </body>
     </html>
   );
