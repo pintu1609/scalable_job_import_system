@@ -36,8 +36,16 @@ export default function RootLayout({
                 <CookiesProvider>
 
           <Toaster position="top-right" />
-        {children}
-          <Footer/>
+      <div className="flex min-h-screen flex-col">
+              
+              
+              <main className="flex-1 mb-8">
+                {children}
+              </main>
+
+             
+              <Footer />
+            </div>
 
         </CookiesProvider>
         </Provider>

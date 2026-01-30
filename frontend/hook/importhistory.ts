@@ -5,10 +5,10 @@ import { z } from "zod";
 
 // get history
 
-const fetchHistory = async () => {
+const fetchHistory = async ({ page, PAGE_SIZE }: { page: number; PAGE_SIZE: number }) => {
   const { data } = await axiosInstance({
     method: "get",
-    url: ENDPOINTS.HISTORY,
+    url:`${ENDPOINTS.HISTORY}?page=${page}&limit=${PAGE_SIZE}`,
     headers: { "Content-Type": "application/json" },
   });
   const statusSchema = z.number().optional();
@@ -40,10 +40,11 @@ const userData = z.array(dataSchema);
   return { status, message, data: retData,length:data.data.total };
 };
 
-const useHistory = () => {
+const useHistory = ({ page, PAGE_SIZE }: { page: number; PAGE_SIZE: number }) => {
   return useQuery({
-    queryKey: ["useHistory"],
-    queryFn: () => fetchHistory(),
+    queryKey: ["useHistory", page, PAGE_SIZE],
+    queryFn: () => fetchHistory({ page, PAGE_SIZE }),
+    // keepPreviousData: true,
   });
 };
 

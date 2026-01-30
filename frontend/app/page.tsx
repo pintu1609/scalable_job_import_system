@@ -1,9 +1,14 @@
 "use client";
 
 import { useHistory } from "@/hook/importhistory";
+import { useState } from "react";
 
 export default function Home() {
-  const { data, isPending, isError, error } = useHistory();
+  const [pageNo, setPageNo] = useState(1);
+  const { data, isPending, isError, error } = useHistory({
+    page: pageNo,
+    PAGE_SIZE: 10,
+  });
 
   if (isPending) {
     return (
@@ -21,8 +26,9 @@ export default function Home() {
     );
   }
 
+   const totalPages = Math.ceil(data.length / 10);
   return (
-    <div className="p-6">
+    <div className="p-8">
       {/* Page Title */}
       <h1 className="text-2xl font-semibold mb-6">
         Import History Tracking
@@ -102,6 +108,29 @@ export default function Home() {
           </tbody>
         </table>
       </div>
-    </div>
+ <div className="flex justify-between items-center mt-6">
+        <span className="text-sm text-gray-600">
+          Page {pageNo} of {totalPages}
+        </span>
+
+        <div className="flex gap-2">
+          <button
+            disabled={pageNo === 1}
+            onClick={() => setPageNo((p) => p - 1)}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          <button
+            disabled={pageNo === totalPages}
+            onClick={() => setPageNo((p) => p + 1)}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>    
   );
 }

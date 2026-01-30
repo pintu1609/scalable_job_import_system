@@ -13,25 +13,28 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-// app.use(db.connectToDatabase);
-db.connectToDatabase();
-
-startCron();
-startWorker();
-
-
 app.use("/api/v1/", routes);
 
 const server = http.createServer(app);
 const portNumber = process.env.PORT || 5000;
 
-server.listen(portNumber, (err) => {
-  console.log("portNumber ", process.env.PORT);
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(`Listening on port ${portNumber}`);
-  }
-});
-
 app.use(useErrorHandler);
+
+(async () => {
+  try {
+    await db.connectToDatabase();
+    console.log("✅ MongoDB connected");
+
+    startCron();
+
+    startWorker();
+
+    server.listen(portNumber, () => {
+      console.log(`Server running on port ${portNumber}`);
+    });
+
+  } catch (err) {
+    console.error("Startup failed:", err);
+    process.exit(1);
+  }
+})();
